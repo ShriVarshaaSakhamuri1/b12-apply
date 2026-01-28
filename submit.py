@@ -2,8 +2,10 @@ import json
 import hmac
 import hashlib
 import os
+import urllib.request
 from datetime import datetime, timezone
 
+URL = "https://b12.io/apply/submission"
 SIGNING_SECRET = b"hello-there-from-b12"
 
 def main():
@@ -38,11 +40,21 @@ def main():
         hashlib.sha256
     ).hexdigest()
 
-    print("JSON body:")
-    print(body.decode("utf-8"))
-    print()
-    print("X-Signature-256:")
-    print(f"sha256={signature}")
+    headers = {
+        "Content-Type": "application/json",
+        "X-Signature-256": f"sha256={signature}",
+    }
+
+    request = urllib.request.Request(
+        URL,
+        data=body,
+        headers=headers,
+        method="POST",
+    )
+
+    with urllib.request.urlopen(request) as response:
+        response_body = response.read().decode("utf-8")
+        print(response_body)
 
 if __name__ == "__main__":
     main()
