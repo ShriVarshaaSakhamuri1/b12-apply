@@ -15,7 +15,5 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Sanity check
-        run: |
-          python --version
-          echo "CI is working"
+      - name: Run submission script
+        run: python submit.py
